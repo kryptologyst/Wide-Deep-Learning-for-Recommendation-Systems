@@ -1,0 +1,94 @@
+# Configuration for Wide & Deep Learning Recommendation System
+
+# Data configuration
+data:
+  interactions_file: "data/raw/interactions.csv"
+  items_file: "data/raw/items.csv"
+  users_file: "data/raw/users.csv"
+  processed_dir: "data/processed"
+  
+  # Data generation parameters (if creating synthetic data)
+  synthetic:
+    n_users: 1000
+    n_items: 500
+    n_interactions: 10000
+    rating_scale: [1, 5]
+    sparsity: 0.95
+
+# Model configuration
+model:
+  wide_deep:
+    embedding_dim: 64
+    hidden_dims: [128, 64, 32]
+    dropout: 0.2
+    activation: "relu"
+    
+  # Baseline models
+  baselines:
+    popularity:
+      enabled: true
+    user_knn:
+      enabled: true
+      k: 50
+    item_knn:
+      enabled: true
+      k: 50
+    matrix_factorization:
+      enabled: true
+      factors: 50
+      iterations: 100
+
+# Training configuration
+training:
+  batch_size: 256
+  learning_rate: 0.001
+  epochs: 50
+  early_stopping:
+    patience: 10
+    min_delta: 0.001
+  validation_split: 0.2
+  test_split: 0.1
+
+# Evaluation configuration
+evaluation:
+  metrics:
+    - "precision@5"
+    - "precision@10"
+    - "recall@5"
+    - "recall@10"
+    - "ndcg@5"
+    - "ndcg@10"
+    - "map@10"
+    - "hit_rate@10"
+    - "coverage"
+    - "diversity"
+    - "novelty"
+  
+  # Cross-validation
+  cv_folds: 5
+  random_state: 42
+
+# Demo configuration
+demo:
+  streamlit:
+    port: 8501
+    host: "localhost"
+  gradio:
+    port: 7860
+    share: false
+
+# Logging configuration
+logging:
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "models/logs/training.log"
+
+# Experiment tracking
+tracking:
+  mlflow:
+    enabled: true
+    experiment_name: "wide_deep_recommendations"
+    tracking_uri: "file:./models/mlruns"
+  wandb:
+    enabled: false
+    project: "wide-deep-recommendations"
